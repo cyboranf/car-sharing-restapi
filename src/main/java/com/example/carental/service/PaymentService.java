@@ -1,8 +1,10 @@
 package com.example.carental.service;
 
 import com.example.carental.repository.PaymentRepository;
-import jakarta.transaction.Transactional;
+
 import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
 
 @Service
 @Transactional
