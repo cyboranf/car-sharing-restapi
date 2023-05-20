@@ -4,6 +4,8 @@ import com.example.carental.dto.car.CarResponseDTO;
 import com.example.carental.dto.user.UserRequestDTO;
 import com.example.carental.dto.user.UserResponseDTO;
 import com.example.carental.exception.ResourceNotFoundException;
+import com.example.carental.exception.UserRegistrationException;
+import com.example.carental.exception.UserUpdateException;
 import com.example.carental.model.Car;
 import com.example.carental.model.CarFeature;
 import com.example.carental.model.Role;
@@ -34,19 +36,24 @@ public class UserService {
     }
 
     public UserResponseDTO registerUser(UserRequestDTO userRequestDTO) {
-        User newUser = new User();
-        newUser.setEmail(userRequestDTO.getEmail());
-        newUser.setFirstName(userRequestDTO.getFirstName());
-        newUser.setLastName(userRequestDTO.getLastName());
-        newUser.setPassword(passwordEncoder.encode(userRequestDTO.getPassword()));  // encode password
-        newUser.setContactsCount(userRequestDTO.getContactsCount());
-        newUser.setMsgCount(userRequestDTO.getMsgCount());
-        newUser.setActive(userRequestDTO.isActive());
-        newUser.setAddress(addressRepository.findById(userRequestDTO.getAddressId())
-                .orElseThrow(() -> new ResourceNotFoundException("Address not found with id: " + userRequestDTO.getAddressId())));
+        try {
+            User newUser = new User();
+            newUser.setEmail(userRequestDTO.getEmail());
+            newUser.setFirstName(userRequestDTO.getFirstName());
+            newUser.setLastName(userRequestDTO.getLastName());
+            newUser.setPassword(passwordEncoder.encode(userRequestDTO.getPassword()));  // encode password
+            newUser.setContactsCount(userRequestDTO.getContactsCount());
+            newUser.setMsgCount(userRequestDTO.getMsgCount());
+            newUser.setActive(userRequestDTO.isActive());
+            newUser.setAddress(addressRepository.findById(userRequestDTO.getAddressId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Address not found with id: " + userRequestDTO.getAddressId())));
 
-        User savedUser = userRepository.save(newUser);
-        return mapUserToResponseDTO(savedUser);
+            User savedUser = userRepository.save(newUser);
+            return mapUserToResponseDTO(savedUser);
+        } catch (Exception e) {
+            throw new UserRegistrationException("Failed to register the user.", e);
+        }
+
     }
 
     public List<UserResponseDTO> getAllUsers() {
@@ -62,29 +69,33 @@ public class UserService {
     }
 
     public UserResponseDTO updateUser(Long userId, UserRequestDTO userRequestDTO) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
-        user.setEmail(userRequestDTO.getEmail());
-        user.setFirstName(userRequestDTO.getFirstName());
-        user.setLastName(userRequestDTO.getLastName());
-        user.setPassword(passwordEncoder.encode(userRequestDTO.getPassword()));
-        user.setContactsCount(userRequestDTO.getContactsCount());
-        user.setMsgCount(userRequestDTO.getMsgCount());
-        user.setActive(userRequestDTO.isActive());
-        user.setAddress(addressRepository.findById(userRequestDTO.getAddressId())
-                .orElseThrow(() -> new ResourceNotFoundException("Address not fount with id: " + userRequestDTO.getAddressId())));
+        try {
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
+            user.setEmail(userRequestDTO.getEmail());
+            user.setFirstName(userRequestDTO.getFirstName());
+            user.setLastName(userRequestDTO.getLastName());
+            user.setPassword(passwordEncoder.encode(userRequestDTO.getPassword()));
+            user.setContactsCount(userRequestDTO.getContactsCount());
+            user.setMsgCount(userRequestDTO.getMsgCount());
+            user.setActive(userRequestDTO.isActive());
+            user.setAddress(addressRepository.findById(userRequestDTO.getAddressId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Address not fount with id: " + userRequestDTO.getAddressId())));
 
-        User updatedUser = userRepository.save(user);
-        return mapUserToResponseDTO(updatedUser);
+            User updatedUser = userRepository.save(user);
+            return mapUserToResponseDTO(updatedUser);
+        } catch (Exception e) {
+            throw new UserUpdateException("Failed to update the user.", e);
+        }
     }
 
-    public void deleteUser(Long userId){
-        User user=userRepository.findById(userId)
-                .orElseThrow(()-> new ResourceNotFoundException("User not found with id: "+userId));
+    public void deleteUser(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
         userRepository.delete(user);
     }
 
-    public List<CarResponseDTO> getUsersCars(Long userId){
+    public List<CarResponseDTO> getUsersCars(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
 
@@ -116,21 +127,21 @@ public class UserService {
         dto.setSeats(car.getSeats());
 
         // Assuming that Car class has getOwner() and the returned User object has getId() method
-        if(car.getOwner() != null) {
+        if (car.getOwner() != null) {
             dto.setOwnerId(car.getOwner().getId());
         }
 
-        if(car.getStatus() != null) {
+        if (car.getStatus() != null) {
             dto.setStatusId(car.getStatus().getId());
         }
-        if(car.getType() != null) {
+        if (car.getType() != null) {
             dto.setTypeId(car.getType().getId());
         }
-        if(car.getManufacturer() != null) {
+        if (car.getManufacturer() != null) {
             dto.setManufacturerId(car.getManufacturer().getId());
         }
 
-        if(car.getFeatures() != null) {
+        if (car.getFeatures() != null) {
             dto.setFeatureIds(car.getFeatures().stream()
                     .map(CarFeature::getId)
                     .collect(Collectors.toSet()));
