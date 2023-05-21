@@ -1,8 +1,9 @@
 package com.example.carental.model;
 
 import com.example.carental.model.enums.RatingValue;
-import jakarta.persistence.*;
 import lombok.Data;
+
+import javax.persistence.*;
 
 @Entity
 @Table(name = "rating")

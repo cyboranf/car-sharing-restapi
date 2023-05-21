@@ -1,8 +1,8 @@
 package com.example.carental.model;
 
-import jakarta.persistence.Embeddable;
 import lombok.Data;
 
+import javax.persistence.Embeddable;
 import java.io.Serializable;
 
 @Embeddable

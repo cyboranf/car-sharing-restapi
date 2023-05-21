@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -27,12 +28,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
-        User user = userRepository.findByUserName(name).get();
+        User user = userRepository.findByFirstName(name).get();
         if (user == null) {
-            throw new UsernameNotFoundException(name);
+            throw new UsernameNotFoundException("User not found with username: " + name);
         }
-        Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
-        user.getRoles().forEach(role -> grantedAuthorities.add(new SimpleGrantedAuthority(role.getName())));
-        return new AuthenticatedUser(user.getFirstName(), user.getPassword(), grantedAuthorities, user);
+
+        // No need to encode the password here as it's already encoded in the database
+        return new org.springframework.security.core.userdetails.User(user.getFirstName(), user.getPassword(),
+                new ArrayList<>());
     }
 }

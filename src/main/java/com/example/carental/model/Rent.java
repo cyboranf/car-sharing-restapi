@@ -1,8 +1,7 @@
 package com.example.carental.model;
-
-import jakarta.persistence.*;
 import lombok.Data;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity

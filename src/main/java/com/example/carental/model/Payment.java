@@ -2,8 +2,9 @@ package com.example.carental.model;
 
 import com.example.carental.model.enums.PaymentMethodValue;
 import com.example.carental.model.enums.PaymentStatus;
-import jakarta.persistence.*;
 import lombok.Data;
+
+import javax.persistence.*;
 
 @Entity
 @Table(name = "payment")

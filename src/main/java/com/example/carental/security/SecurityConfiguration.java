@@ -3,6 +3,7 @@ package com.example.carental.security;
 import com.example.carental.service.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -34,6 +35,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
+                .antMatchers("/register","/login").permitAll() // permit registration for all
+                .antMatchers(HttpMethod.GET,"/users/{userId}").access("@webSecurity.checkUserId(authentication,#userId)")
+                .antMatchers(HttpMethod.GET,"/users/{userId}/cars").access("@webSecurity.checkUserId(authentication,#userId)")
+                .antMatchers(HttpMethod.PUT,"/users/{userId}").access("@webSecurity.checkUserId(authentication,#userId)")
+                .antMatchers("/users/**").hasRole("ADMIN") // only admin can access other APIs
                 .anyRequest().authenticated()
                 .and()
                 .apply(new JwtConfigurer(jwtTokenProvider));

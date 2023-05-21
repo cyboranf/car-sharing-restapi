@@ -1,9 +1,9 @@
 package com.example.carental.model;
 
 import com.example.carental.model.enums.CarStatusValue;
-import jakarta.persistence.*;
 import lombok.Data;
 
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
