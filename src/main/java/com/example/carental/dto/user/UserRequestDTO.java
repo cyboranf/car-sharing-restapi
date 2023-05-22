@@ -16,5 +16,9 @@ public class UserRequestDTO {
     @NotEmpty
     private String password;
 
+    private int contactsCount;
+    private int msgCount;
+    private boolean active;
+
 
 }

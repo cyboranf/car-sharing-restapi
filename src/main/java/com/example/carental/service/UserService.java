@@ -1,22 +1,24 @@
 package com.example.carental.service;
 
 import com.example.carental.dto.car.CarResponseDTO;
+import com.example.carental.dto.register.UserRegistrationRequest;
 import com.example.carental.dto.user.UserRequestDTO;
 import com.example.carental.dto.user.UserResponseDTO;
 import com.example.carental.exception.ResourceNotFoundException;
-import com.example.carental.exception.UserRegistrationException;
 import com.example.carental.exception.UserUpdateException;
 import com.example.carental.model.Car;
 import com.example.carental.model.CarFeature;
 import com.example.carental.model.Role;
 import com.example.carental.model.User;
 import com.example.carental.repository.AddressRepository;
+import com.example.carental.repository.RoleRepository;
 import com.example.carental.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,33 +30,43 @@ public class UserService {
 
     private final PasswordEncoder passwordEncoder;
 
+    private final RoleRepository roleRepository;
+
     @Autowired
-    public UserService(UserRepository userRepository, AddressRepository addressRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, AddressRepository addressRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.addressRepository = addressRepository;
         this.passwordEncoder = passwordEncoder;
+        this.roleRepository = roleRepository;
     }
 
-    public UserResponseDTO registerUser(UserRequestDTO userRequestDTO) {
-        try {
-            User newUser = new User();
-            newUser.setEmail(userRequestDTO.getEmail());
-            newUser.setFirstName(userRequestDTO.getFirstName());
-            newUser.setLastName(userRequestDTO.getLastName());
-            newUser.setPassword(passwordEncoder.encode(userRequestDTO.getPassword()));  // encode password
-            newUser.setContactsCount(userRequestDTO.getContactsCount());
-            newUser.setMsgCount(userRequestDTO.getMsgCount());
-            newUser.setActive(userRequestDTO.isActive());
-            newUser.setAddress(addressRepository.findById(userRequestDTO.getAddressId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Address not found with id: " + userRequestDTO.getAddressId())));
-
-            User savedUser = userRepository.save(newUser);
-            return mapUserToResponseDTO(savedUser);
-        } catch (Exception e) {
-            throw new UserRegistrationException("Failed to register the user.", e);
+    public User registerUser(UserRegistrationRequest registrationRequest) {
+        // Check if the username already exists
+        if (userRepository.existsByFirstName(registrationRequest.getFirstName()) && userRepository.existsByLastName(registrationRequest.getLastName())) {
+            throw new IllegalArgumentException("You have an account");
         }
 
+
+        if (userRepository.existsByEmail(registrationRequest.getEmail())) {
+            throw new IllegalArgumentException("Email is already in use.");
+        }
+
+        // Create a new User object with the registration details
+        User newUser = new User();
+        newUser.setFirstName(registrationRequest.getFirstName());
+        newUser.setLastName(registrationRequest.getLastName());
+        newUser.setEmail(registrationRequest.getEmail());
+        newUser.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
+
+
+        // Assign a default role to the user
+        Role defaultRole = roleRepository.findByName("ROLE_USER")
+                .orElseThrow(() -> new IllegalArgumentException("Default user role not found."));
+        newUser.setRoles(Collections.singleton(defaultRole));
+
+        return userRepository.save(newUser);
     }
+
 
     public List<UserResponseDTO> getAllUsers() {
         return userRepository.findAll().stream()
@@ -76,11 +88,11 @@ public class UserService {
             user.setFirstName(userRequestDTO.getFirstName());
             user.setLastName(userRequestDTO.getLastName());
             user.setPassword(passwordEncoder.encode(userRequestDTO.getPassword()));
-            user.setContactsCount(userRequestDTO.getContactsCount());
-            user.setMsgCount(userRequestDTO.getMsgCount());
-            user.setActive(userRequestDTO.isActive());
-            user.setAddress(addressRepository.findById(userRequestDTO.getAddressId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Address not fount with id: " + userRequestDTO.getAddressId())));
+//            user.setContactsCount(userRequestDTO.getContactsCount());
+//            user.setMsgCount(userRequestDTO.getMsgCount());
+//            user.setActive(userRequestDTO.isActive());
+//            user.setAddress(addressRepository.findById(userRequestDTO.getAddressId())
+//                    .orElseThrow(() -> new ResourceNotFoundException("Address not fount with id: " + userRequestDTO.getAddressId())));
 
             User updatedUser = userRepository.save(user);
             return mapUserToResponseDTO(updatedUser);
