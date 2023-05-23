@@ -35,12 +35,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/register","/login").permitAll() // permit registration for all
-                .antMatchers(HttpMethod.GET,"/users/{userId}").access("@webSecurity.checkUserId(authentication,#userId)")
-                .antMatchers(HttpMethod.GET,"/users/{userId}/cars").access("@webSecurity.checkUserId(authentication,#userId)")
-                .antMatchers(HttpMethod.PUT,"/users/{userId}").access("@webSecurity.checkUserId(authentication,#userId)")
-                .antMatchers("/users/**").hasRole("ADMIN") // only admin can access other APIs
-                .anyRequest().authenticated()
+                .antMatchers("/api/register", "/api/login").permitAll()
+                .antMatchers(HttpMethod.GET,"/api/users").hasAnyRole("USER","SHARING_USER","ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/users/{userId}").hasRole("USER")
+                .antMatchers(HttpMethod.GET, "/api/users/{userId}/cars").hasRole("USER")
+                .antMatchers(HttpMethod.PUT, "/api/users/{userId}").hasRole("USER")
+                .anyRequest().hasRole("ADMIN")
                 .and()
                 .apply(new JwtConfigurer(jwtTokenProvider));
     }

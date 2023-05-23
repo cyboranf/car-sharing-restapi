@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -28,13 +29,18 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
-        User user = userRepository.findByFirstName(name).get();
+        User user = userRepository.findByFirstName(name).orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + name));
+
         if (user == null) {
             throw new UsernameNotFoundException("User not found with username: " + name);
         }
 
+        // Fetch the roles associated with the user
+        Set<GrantedAuthority> authorities = user.getRoles().stream()
+                .map(role -> new SimpleGrantedAuthority(role.getName()))
+                .collect(Collectors.toSet());
+
         // No need to encode the password here as it's already encoded in the database
-        return new org.springframework.security.core.userdetails.User(user.getFirstName(), user.getPassword(),
-                new ArrayList<>());
+        return new org.springframework.security.core.userdetails.User(user.getFirstName(), user.getPassword(), authorities);
     }
 }

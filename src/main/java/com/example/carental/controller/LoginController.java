@@ -22,7 +22,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("")
+@RequestMapping("/api")
 public class LoginController {
     private final UserService userService;
     private final AuthenticationManager authenticationManager;

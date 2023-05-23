@@ -46,7 +46,6 @@ public class UserService {
             throw new IllegalArgumentException("You have an account");
         }
 
-
         if (userRepository.existsByEmail(registrationRequest.getEmail())) {
             throw new IllegalArgumentException("Email is already in use.");
         }
@@ -57,7 +56,6 @@ public class UserService {
         newUser.setLastName(registrationRequest.getLastName());
         newUser.setEmail(registrationRequest.getEmail());
         newUser.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
-
 
         // Assign a default role to the user
         Role defaultRole = roleRepository.findByName("ROLE_USER")
@@ -125,7 +123,11 @@ public class UserService {
         dto.setContactsCount(user.getContactsCount());
         dto.setMsgCount(user.getMsgCount());
         dto.setActive(user.isActive());
-        dto.setAddressId(user.getAddress().getId());
+
+        if (user.getAddress() != null) {
+            dto.setAddressId(user.getAddress().getId());
+        }
+
         dto.setRoleIds(user.getRoles().stream().map(Role::getId).collect(Collectors.toSet()));  // map roles to roleIds
 
         return dto;
