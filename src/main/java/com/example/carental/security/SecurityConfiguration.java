@@ -35,12 +35,26 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
+                //login controller
                 .antMatchers("/api/register", "/api/login").permitAll()
+                //methods GET from UserController:
                 .antMatchers(HttpMethod.GET,"/api/users").hasAnyRole("USER","SHARING_USER","ADMIN")
-                .antMatchers(HttpMethod.GET, "/api/users/{userId}").hasRole("USER")
-                .antMatchers(HttpMethod.DELETE, "/api/users/{userId}").hasRole("ADMIN")
-                .antMatchers(HttpMethod.GET, "/api/users/{userId}/cars").hasRole("USER")
+                .antMatchers(HttpMethod.GET, "/api/users/{userId}").hasAnyRole("USER","SHARING_USER", "ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/users/{userId}/cars").hasAnyRole("USER", "SHARING_USER", "ADMIN")
+                //methods GET from CarController:
+                .antMatchers(HttpMethod.GET, "/api/cars").hasAnyRole("USER","SHARING_USER", "ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/cars/{carId}").hasAnyRole("USER","SHARING_USER", "ADMIN")
+                //methods POST from CarController:
+                .antMatchers(HttpMethod.POST, "/api/cars").hasAnyRole("SHARING_USER", "ADMIN")
+                //methods PUT from UserController
                 .antMatchers(HttpMethod.PUT, "/api/users/{userId}").hasRole("ADMIN")
+                //methods PUT from CarController:
+                .antMatchers(HttpMethod.PUT, "/api/cars/{carId}").hasAnyRole("SHARING_USER","ADMIN")
+                //methods DELETE from UserController
+                .antMatchers(HttpMethod.DELETE, "/api/users/{userId}").hasRole("ADMIN")
+                //method DELETE from CarController
+                .antMatchers(HttpMethod.DELETE, "/api/cars/{carId}").hasRole("ADMIN")
+
                 .anyRequest().hasRole("ADMIN")
                 .and()
                 .apply(new JwtConfigurer(jwtTokenProvider));

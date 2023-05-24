@@ -67,8 +67,9 @@ public class UserService {
 
         return userRepository.save(newUser);
     }
-
-
+    public boolean existsByFirstName(String firstName) {
+        return userRepository.existsByFirstName(firstName);
+    }
     public List<UserResponseDTO> getAllUsers() {
         return userRepository.findAll().stream()
                 .map(this::mapUserToResponseDTO)
