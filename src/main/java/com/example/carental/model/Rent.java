@@ -24,4 +24,9 @@ public class Rent {
     @ManyToOne
     @JoinColumn(name = "car_id")
     private Car car;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
 }

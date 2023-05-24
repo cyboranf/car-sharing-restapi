@@ -49,11 +49,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 //methods GET from BookingController:
                 .antMatchers(HttpMethod.GET, "/api/cars/users/{userId}/booking").hasAnyRole("USER", "SHARING_USER", "ADMIN")
                 .antMatchers(HttpMethod.GET, "/api/cars/bookings/{bookingId}").hasAnyRole("USER", "SHARING_USER", "ADMIN")
+                //methods GET from RentController:
+                .antMatchers(HttpMethod.GET, "/api/users/{userId}/rents").hasAnyRole("USER", "SHARING_USER", "ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/rents/{rentId}").hasAnyRole("USER", "SHARING_USER", "ADMIN")
 
                 //methods POST from CarController:
                 .antMatchers(HttpMethod.POST, "/api/cars").hasAnyRole("SHARING_USER", "ADMIN")
                 //methods POST from BookingController:
                 .antMatchers(HttpMethod.POST, "/api/cars/bookings").hasAnyRole("USER","SHARING_USER", "ADMIN")
+                //methods POST from RentController:
+                .antMatchers(HttpMethod.POST, "/api/bookings/{bookingId}/rents").hasAnyRole("USER","SHARING_USER", "ADMIN")
 
                 //methods PUT from UserController:
                 .antMatchers(HttpMethod.PUT, "/api/users/{userId}").hasRole("ADMIN")
@@ -61,6 +66,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.PUT, "/api/cars/{carId}").hasAnyRole("SHARING_USER","ADMIN")
                 //methods PUT from Booking Controller
                 .antMatchers(HttpMethod.PUT, "/api/cars/bookings/{bookingId}").hasAnyRole("SHARING_USER","ADMIN")
+                //method PUT from RentController:
+                .antMatchers(HttpMethod.PUT, "/api/rents/{rentId}").hasAnyRole("SHARING_USER","ADMIN")
 
                 //methods DELETE from UserController:
                 .antMatchers(HttpMethod.DELETE, "/api/users/{userId}").hasRole("ADMIN")
@@ -68,6 +75,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.DELETE, "/api/cars/{carId}").hasRole("ADMIN")
                 //method DELETE from BookingController
                 .antMatchers(HttpMethod.DELETE, "/api/cars/bookings/{bookingId}").hasRole("ADMIN")
+                //method DELETE from RentController:
+                .antMatchers(HttpMethod.DELETE, "/api/rents/{rentId}").hasRole("ADMIN")
 
                 .anyRequest().hasRole("ADMIN")
                 .and()

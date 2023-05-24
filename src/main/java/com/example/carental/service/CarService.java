@@ -43,7 +43,10 @@ public class CarService {
         }
         return null;
     }
-
+    public Car findCarById(Long carId) {
+        return carRepository.findById(carId)
+                .orElseThrow(() -> new ResourceNotFoundException("Car not found with ID: " + carId));
+    }
     public CarResponseDTO getCarById(Long carId) {
         Car car = carRepository.findById(carId)
                 .orElseThrow(() -> new ResourceNotFoundException("Car not found with ID: " + carId));
