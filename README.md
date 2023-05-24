@@ -1,6 +1,6 @@
-# Car Rental REST API (not finished yet)
+# Car Sharing REST API (not finished yet)
 
-This project is a REST API designed for car rental services, named "Car Rental". It is built using Spring Boot and provides various features, such as user authentication, car booking, car features management and more.
+This project is a REST API designed for car rental services, named "Car Sharing". It is built using Spring Boot and provides various features, such as user authentication, car booking, car features management and more.
 
 ## ERD
 
