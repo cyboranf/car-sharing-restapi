@@ -6,8 +6,8 @@ import com.example.carental.dto.user.UserRequestDTO;
 import com.example.carental.dto.user.UserResponseDTO;
 import com.example.carental.exception.ResourceNotFoundException;
 import com.example.carental.exception.UserUpdateException;
+import com.example.carental.mapper.UserMapper;
 import com.example.carental.model.Car;
-import com.example.carental.model.CarFeature;
 import com.example.carental.model.Role;
 import com.example.carental.model.User;
 import com.example.carental.repository.AddressRepository;
@@ -22,6 +22,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
+
 @Service
 @Transactional
 public class UserService {
@@ -31,6 +33,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     private final RoleRepository roleRepository;
+    private UserMapper userMapper;
 
     @Autowired
     public UserService(UserRepository userRepository, AddressRepository addressRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository) {
@@ -86,12 +89,6 @@ public class UserService {
             user.setFirstName(userRequestDTO.getFirstName());
             user.setLastName(userRequestDTO.getLastName());
             user.setPassword(passwordEncoder.encode(userRequestDTO.getPassword()));
-//            user.setContactsCount(userRequestDTO.getContactsCount());
-//            user.setMsgCount(userRequestDTO.getMsgCount());
-//            user.setActive(userRequestDTO.isActive());
-//            user.setAddress(addressRepository.findById(userRequestDTO.getAddressId())
-//                    .orElseThrow(() -> new ResourceNotFoundException("Address not fount with id: " + userRequestDTO.getAddressId())));
-
             User updatedUser = userRepository.save(user);
             return mapUserToResponseDTO(updatedUser);
         } catch (Exception e) {
@@ -113,54 +110,10 @@ public class UserService {
                 .map(this::mapCarToCarResponseDTO)
                 .collect(Collectors.toList());
     }
-
-    private UserResponseDTO mapUserToResponseDTO(User user) {
-        UserResponseDTO dto = new UserResponseDTO();
-        dto.setId(user.getId());
-        dto.setEmail(user.getEmail());
-        dto.setFirstName(user.getFirstName());
-        dto.setLastName(user.getLastName());
-        dto.setContactsCount(user.getContactsCount());
-        dto.setMsgCount(user.getMsgCount());
-        dto.setActive(user.isActive());
-
-        if (user.getAddress() != null) {
-            dto.setAddressId(user.getAddress().getId());
-        }
-
-        dto.setRoleIds(user.getRoles().stream().map(Role::getId).collect(Collectors.toSet()));  // map roles to roleIds
-
-        return dto;
+    public UserResponseDTO mapUserToResponseDTO(User user){
+        return userMapper.mapUserToResponseDTO(user);
     }
-
-    private CarResponseDTO mapCarToCarResponseDTO(Car car) {
-        CarResponseDTO dto = new CarResponseDTO();
-        dto.setId(car.getId());
-        dto.setModel(car.getModel());
-        dto.setDescription(car.getDescription());
-        dto.setSeats(car.getSeats());
-
-        // Assuming that Car class has getOwner() and the returned User object has getId() method
-        if (car.getOwner() != null) {
-            dto.setOwnerId(car.getOwner().getId());
-        }
-
-        if (car.getStatus() != null) {
-            dto.setStatusId(car.getStatus().getId());
-        }
-        if (car.getType() != null) {
-            dto.setTypeId(car.getType().getId());
-        }
-        if (car.getManufacturer() != null) {
-            dto.setManufacturerId(car.getManufacturer().getId());
-        }
-
-        if (car.getFeatures() != null) {
-            dto.setFeatureIds(car.getFeatures().stream()
-                    .map(CarFeature::getId)
-                    .collect(Collectors.toSet()));
-        }
-
-        return dto;
+    public CarResponseDTO mapCarToCarResponseDTO(Car car){
+        return userMapper.mapCarToCarResponseDTO(car);
     }
 }
