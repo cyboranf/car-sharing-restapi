@@ -82,6 +82,11 @@ public class UserService {
         return mapUserToResponseDTO(user);
     }
 
+    public User getUser2(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
+    }
+
     public UserResponseDTO updateUser(Long userId, UserRequestDTO userRequestDTO) {
         try {
             User user = userRepository.findById(userId)

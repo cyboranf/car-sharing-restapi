@@ -41,6 +41,10 @@ public class RentService {
         return rentMapper.toDTO(rent);
     }
 
+    public Rent getRentById2(Long rentId) {
+        return rentRepository.findById(rentId)
+                .orElseThrow(() -> new IllegalArgumentException("Rent not found"));
+    }
     public RentResponseDTO updateRent(Long rentId, RentRequestDTO rentRequestDTO) {
         Rent rent = rentRepository.findById(rentId)
                 .orElseThrow(() -> new IllegalArgumentException("Rent not found"));

@@ -18,8 +18,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-
-
     private final JwtTokenProvider jwtTokenProvider;
     private final UserDetailsServiceImpl userDetailsService;
 
@@ -52,6 +50,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 //methods GET from RentController:
                 .antMatchers(HttpMethod.GET, "/api/users/{userId}/rents").hasAnyRole("USER", "SHARING_USER", "ADMIN")
                 .antMatchers(HttpMethod.GET, "/api/rents/{rentId}").hasAnyRole("USER", "SHARING_USER", "ADMIN")
+                //methods GET from PaymentController:
+                .antMatchers(HttpMethod.GET, "/api/{userId}/payments").hasAnyRole("USER", "SHARING_USER", "ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/payments/{paymentId}").hasAnyRole("USER", "SHARING_USER", "ADMIN")
 
                 //methods POST from CarController:
                 .antMatchers(HttpMethod.POST, "/api/cars").hasAnyRole("SHARING_USER", "ADMIN")
@@ -59,6 +60,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/api/cars/bookings").hasAnyRole("USER","SHARING_USER", "ADMIN")
                 //methods POST from RentController:
                 .antMatchers(HttpMethod.POST, "/api/bookings/{bookingId}/rents").hasAnyRole("USER","SHARING_USER", "ADMIN")
+                //methods POST from PaymentController:
+                .antMatchers(HttpMethod.POST, "/api/bookings/{bookingId}/payments").hasAnyRole("USER","SHARING_USER", "ADMIN")
+
 
                 //methods PUT from UserController:
                 .antMatchers(HttpMethod.PUT, "/api/users/{userId}").hasRole("ADMIN")
