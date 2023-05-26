@@ -4,9 +4,11 @@ import com.example.carental.dto.car.CarRequestDTO;
 import com.example.carental.dto.car.CarResponseDTO;
 import com.example.carental.model.Car;
 import com.example.carental.model.CarFeature;
+import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;
 
+@Component
 public class CarMapper {
     public static Car mapCarRequestDTOToCar(CarRequestDTO carRequestDTO) {
         Car car = new Car();

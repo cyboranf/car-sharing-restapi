@@ -53,6 +53,12 @@ public class CarService {
         return CarMapper.mapCarToCarResponseDTO(car);
     }
 
+    public Car getCarById2(Long carId) {
+        Car car = carRepository.findById(carId)
+                .orElseThrow(() -> new ResourceNotFoundException("Car not found with ID: " + carId));
+        return car;
+    }
+
     public void deleteCar(Long carId) {
         carRepository.deleteById(carId);
     }

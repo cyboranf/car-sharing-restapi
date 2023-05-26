@@ -3,7 +3,9 @@ package com.example.carental.mapper;
 import com.example.carental.dto.booking.BookingRequestDTO;
 import com.example.carental.dto.booking.BookingResponseDTO;
 import com.example.carental.model.Booking;
+import org.springframework.stereotype.Component;
 
+@Component
 public class BookingMapper {
     public static Booking toEntity(BookingRequestDTO bookingRequestDTO) {
         Booking booking = new Booking();

@@ -53,6 +53,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 //methods GET from PaymentController:
                 .antMatchers(HttpMethod.GET, "/api/{userId}/payments").hasAnyRole("USER", "SHARING_USER", "ADMIN")
                 .antMatchers(HttpMethod.GET, "/api/payments/{paymentId}").hasAnyRole("USER", "SHARING_USER", "ADMIN")
+                //methods GET  from RatingController
+                .antMatchers(HttpMethod.GET, "/api/cars/{carId}/ratings").hasAnyRole("USER", "SHARING_USER", "ADMIN")
 
                 //methods POST from CarController:
                 .antMatchers(HttpMethod.POST, "/api/cars").hasAnyRole("SHARING_USER", "ADMIN")
@@ -62,6 +64,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/api/bookings/{bookingId}/rents").hasAnyRole("USER","SHARING_USER", "ADMIN")
                 //methods POST from PaymentController:
                 .antMatchers(HttpMethod.POST, "/api/bookings/{bookingId}/payments").hasAnyRole("USER","SHARING_USER", "ADMIN")
+                //methods POST from RatingController:
+                .antMatchers(HttpMethod.POST, "/api/cars/{carId}/ratings").hasAnyRole("USER","SHARING_USER", "ADMIN")
 
 
                 //methods PUT from UserController:

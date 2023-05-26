@@ -6,10 +6,11 @@ import com.example.carental.model.Car;
 import com.example.carental.model.CarFeature;
 import com.example.carental.model.Role;
 import com.example.carental.model.User;
+import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;
 
-
+@Component
 public class UserMapper {
     public  UserResponseDTO mapUserToResponseDTO(User user) {
         UserResponseDTO dto = new UserResponseDTO();
