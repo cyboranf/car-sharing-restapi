@@ -6,6 +6,10 @@ This project is a REST API designed for car rental services, named "Car Sharing"
 
 ![ERD](/images/erd.png)
 
+## Swagger Documentation
+
+![Swagger Documentation](/images/documentation.png)
+
 ## Features
 
 - User Authentication: The API provides secure registration and login features for users.
