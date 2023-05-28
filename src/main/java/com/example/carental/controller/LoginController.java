@@ -3,10 +3,10 @@ package com.example.carental.controller;
 import com.example.carental.dto.login.LoginRequest;
 import com.example.carental.dto.login.LoginResponse;
 import com.example.carental.dto.register.UserRegistrationRequest;
-import com.example.carental.dto.user.UserRequestDTO;
 import com.example.carental.dto.user.UserResponseDTO;
 import com.example.carental.model.User;
 import com.example.carental.security.JwtTokenProvider;
+import com.example.carental.service.EmailService;
 import com.example.carental.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +19,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import javax.mail.MessagingException;
 import javax.validation.Valid;
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api")
@@ -27,11 +29,13 @@ public class LoginController {
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider tokenProvider;
+    private final EmailService emailService;
 
-    public LoginController(UserService userService, AuthenticationManager authenticationManager, JwtTokenProvider tokenProvider) {
+    public LoginController(UserService userService, AuthenticationManager authenticationManager, JwtTokenProvider tokenProvider, EmailService emailService) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.tokenProvider = tokenProvider;
+        this.emailService = emailService;
     }
 
     @PostMapping("/login")
@@ -48,12 +52,24 @@ public class LoginController {
     public ResponseEntity<?> register(@Valid @RequestBody UserRegistrationRequest registrationRequest) {
         try {
             User newUser = userService.registerUser(registrationRequest);
+
+            String verificationLink = "http://localhost:8080/api/verify?token=" + newUser.getId();
+
+            try {
+                emailService.sendVerificationEmail(newUser, verificationLink);
+            } catch (MessagingException | IOException e) {
+                e.printStackTrace();
+                System.err.println("Error while sending verification email: " + e.getMessage());
+
+            }
+
             UserResponseDTO userResponseDTO = convertToUserResponseDTO(newUser);
             return ResponseEntity.status(HttpStatus.CREATED).body(userResponseDTO);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
 
 
     private UserResponseDTO convertToUserResponseDTO(User user) {
@@ -64,15 +80,6 @@ public class LoginController {
         userResponseDTO.setEmail(user.getEmail());
 
         return userResponseDTO;
-    }
-
-    private User convertToUser(UserRequestDTO userRequestDTO) {
-        User user = new User();
-        user.setFirstName(userRequestDTO.getFirstName());
-        user.setLastName(userRequestDTO.getLastName());
-        user.setEmail(userRequestDTO.getEmail());
-
-        return user;
     }
 
 }
