@@ -23,4 +23,6 @@ public class Booking {
     @ManyToOne
     @JoinColumn(name = "car_id")
     private Car car;
+    @Column(name = "calendar_event_id")
+    private String calendarEventId;
 }
