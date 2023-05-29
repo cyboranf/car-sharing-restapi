@@ -16,12 +16,13 @@ import java.security.GeneralSecurityException;
 @Configuration
 public class GmailConfig {
 
-    private String clientId="424740626016-75uceg6d2a2h5a879hdrp4vc1qsnadsp.apps.googleusercontent.com";
+    // I changed the id, secret and refresh token because I received an email from GitGuardian
+    private String clientId="424740626016-75uceg6d2a2h5a879hdrp4vcssa1qsnadsp.apps.googleusercontent.com ";
 
-    private String clientSecret="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";
+    private String clientSecret="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F8O3";
 
 
-    private String refreshToken="1//04yygqogbCEGgCgYIARAAGAQSNgFL9IrTViVPLwsBHQhywu97TDUl033CNQhyCa_cbox5JroiYzmt9TO-WLJAG8xYID7uCTyg";
+    private String refreshToken="1//04yygqogbCEGgCgYIARAAGAQSNgFL9IrTViVPLwsBHQhywu97TDUl033CNQhyCa_cbox5JroiYzmt9TO-WLJAG8xYID7uCTyxxsg";
 
     @Bean
     public Gmail getGmailService() throws GeneralSecurityException, IOException {
