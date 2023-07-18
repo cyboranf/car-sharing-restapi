@@ -1,42 +1,51 @@
 package com.example.carental.mapper;
 
-import com.example.carental.dto.car.CarRequestDTO;
-import com.example.carental.dto.car.CarResponseDTO;
-import com.example.carental.model.Car;
-import com.example.carental.model.CarFeature;
+import com.example.carental.model.*;
+import com.example.carental.dto.car.*;
+import com.example.carental.service.CarFeatureService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
 public class CarMapper {
-    public static Car mapCarRequestDTOToCar(CarRequestDTO carRequestDTO) {
+    private final CarFeatureService carFeatureService;
+
+    public CarMapper(CarFeatureService carFeatureService) {
+        this.carFeatureService = carFeatureService;
+    }
+
+    public CarResponseDTO toDTO(Car car) {
+        CarResponseDTO dto = new CarResponseDTO();
+        dto.setId(car.getId());
+        dto.setBrand(car.getBrand());
+        dto.setModel(car.getModel());
+        dto.setDescription(car.getDescription());
+        dto.setSeats(car.getSeats());
+        dto.setOwnerId(car.getOwner().getId());
+        dto.setStatusId(car.getStatus().getId());
+        dto.setTypeId(car.getType().getId());
+        dto.setManufacturerId(car.getManufacturer().getId());
+        dto.setFeatureIds(car.getFeatures().stream()
+                .map(CarFeature::getId)
+                .collect(Collectors.toSet()));
+        return dto;
+    }
+
+    public Car fromDTO(CarRequestDTO carRequestDTO) {
         Car car = new Car();
         car.setBrand(carRequestDTO.getBrand());
         car.setModel(carRequestDTO.getModel());
         car.setDescription(carRequestDTO.getDescription());
         car.setSeats(carRequestDTO.getSeats());
+
+        Set<CarFeature> features = carRequestDTO.getFeatureIds().stream()
+                .map(carFeatureService::findById) // replace with your service method
+                .collect(Collectors.toSet());
+        car.setFeatures(features);
+
         return car;
-    }
-
-    public static CarResponseDTO mapCarToCarResponseDTO(Car car) {
-        CarResponseDTO carResponseDTO = new CarResponseDTO();
-        carResponseDTO.setId(car.getId());
-        carResponseDTO.setModel(car.getModel());
-        carResponseDTO.setDescription(car.getDescription());
-        carResponseDTO.setSeats(car.getSeats());
-        carResponseDTO.setOwnerId(car.getOwner() != null ? car.getOwner().getId() : null);
-        carResponseDTO.setStatusId(car.getStatus() != null ? car.getStatus().getId() : null);
-        carResponseDTO.setTypeId(car.getType() != null ? car.getType().getId() : null);
-        carResponseDTO.setManufacturerId(car.getManufacturer() != null ? car.getManufacturer().getId() : null);
-        carResponseDTO.setFeatureIds(car.getFeatures() != null ? car.getFeatures().stream().map(CarFeature::getId).collect(Collectors.toSet()) : null);
-        return carResponseDTO;
-    }
-
-    public static void updateCarFields(Car car, CarRequestDTO carRequestDTO) {
-        car.setBrand(carRequestDTO.getBrand());
-        car.setModel(carRequestDTO.getModel());
-        car.setDescription(carRequestDTO.getDescription());
-        car.setSeats(carRequestDTO.getSeats());
     }
 }

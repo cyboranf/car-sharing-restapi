@@ -7,6 +7,7 @@ import java.util.Set;
 @Data
 public class CarResponseDTO {
     private Long id;
+    private String brand;
     private String model;
     private String description;
     private int seats;

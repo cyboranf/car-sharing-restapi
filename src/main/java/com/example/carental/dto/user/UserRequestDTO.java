@@ -15,10 +15,8 @@ public class UserRequestDTO {
     private String lastName;
     @NotEmpty
     private String password;
-
     private int contactsCount;
     private int msgCount;
     private boolean active;
-
-
+    private Long addressId;
 }

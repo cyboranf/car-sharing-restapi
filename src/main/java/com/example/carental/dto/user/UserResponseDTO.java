@@ -14,5 +14,4 @@ public class UserResponseDTO {
     private int msgCount;
     private boolean active;
     private Long addressId;
-    private Set<Integer> roleIds;
 }
