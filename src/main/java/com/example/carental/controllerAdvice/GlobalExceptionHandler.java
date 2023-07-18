@@ -1,7 +1,5 @@
 package com.example.carental.controllerAdvice;
 
-import com.example.carental.exception.UserRegistrationException;
-import com.example.carental.exception.UserUpdateException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
