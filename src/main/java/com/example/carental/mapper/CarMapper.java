@@ -3,7 +3,6 @@ package com.example.carental.mapper;
 import com.example.carental.model.*;
 import com.example.carental.dto.car.*;
 import com.example.carental.service.CarFeatureService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
