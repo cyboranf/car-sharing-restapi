@@ -21,7 +21,6 @@ public class MessageMapper {
     public Message fromDTO(MessageRequestDTO messageRequestDTO) {
         Message message = new Message();
         message.setContent(messageRequestDTO.getContent());
-        message.setSentAt(messageRequestDTO.getSentAt());
         return message;
     }
 }
