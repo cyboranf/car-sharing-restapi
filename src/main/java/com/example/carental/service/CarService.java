@@ -2,10 +2,11 @@ package com.example.carental.service;
 
 import com.example.carental.dto.car.CarRequestDTO;
 import com.example.carental.dto.car.CarResponseDTO;
-import com.example.carental.exception.ResourceNotFoundException;
 import com.example.carental.mapper.CarMapper;
 import com.example.carental.model.Car;
+import com.example.carental.model.enums.CarStatusValue;
 import com.example.carental.repository.CarRepository;
+import com.example.carental.validation.CarValidator;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -16,51 +17,79 @@ import java.util.stream.Collectors;
 @Transactional
 public class CarService {
     private final CarRepository carRepository;
+    private final CarValidator carValidator;
+    private final CarMapper carMapper;
 
-    public CarService(CarRepository carRepository) {
+    public CarService(CarRepository carRepository, CarValidator carValidator, CarMapper carMapper) {
         this.carRepository = carRepository;
+        this.carValidator = carValidator;
+        this.carMapper = carMapper;
     }
 
+    /**
+     * @param carRequestDTO
+     * @return DTO of new Car to rent
+     */
     public CarResponseDTO addCar(CarRequestDTO carRequestDTO) {
-        Car car = CarMapper.mapCarRequestDTOToCar(carRequestDTO);
+        carValidator.addCarValidation(carRequestDTO);
+
+        Car car = carMapper.fromDTO(carRequestDTO);
+
         Car savedCar = carRepository.save(car);
-        return CarMapper.mapCarToCarResponseDTO(savedCar);
+
+        return carMapper.toDTO(savedCar);
     }
 
+    /**
+     * @return dto's of all cars
+     */
     public List<CarResponseDTO> getAllCars() {
         List<Car> cars = carRepository.findAll();
         return cars.stream()
-                .map(CarMapper::mapCarToCarResponseDTO)
+                .map(carMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
+    /**
+     * @return dto's of all available cars
+     */
+    public List<CarResponseDTO> getAllAvailableCars() {
+        List<Car> availableCars = carRepository.findByStatus_Status(CarStatusValue.AVAILABLE);
+        return availableCars.stream()
+                .map(carMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * @param carId
+     * @param carRequestDTO
+     * @return response of updatedCar
+     */
     public CarResponseDTO updateCar(Long carId, CarRequestDTO carRequestDTO) {
-        Car car = carRepository.findById(carId).orElse(null);
-        if (car != null) {
-            CarMapper.updateCarFields(car, carRequestDTO);
-            Car updatedCar = carRepository.save(car);
-            return CarMapper.mapCarToCarResponseDTO(updatedCar);
-        }
-        return null;
-    }
-    public Car findCarById(Long carId) {
-        return carRepository.findById(carId)
-                .orElseThrow(() -> new ResourceNotFoundException("Car not found with ID: " + carId));
-    }
-    public CarResponseDTO getCarById(Long carId) {
-        Car car = carRepository.findById(carId)
-                .orElseThrow(() -> new ResourceNotFoundException("Car not found with ID: " + carId));
-        return CarMapper.mapCarToCarResponseDTO(car);
+        carValidator.updateCarValidation(carId, carRequestDTO);
+
+        Car carToUpdate = carMapper.fromDTO(carRequestDTO);
+
+        Car savedCar = carRepository.save(carToUpdate);
+
+        return carMapper.toDTO(savedCar);
     }
 
-    public Car getCarById2(Long carId) {
-        Car car = carRepository.findById(carId)
-                .orElseThrow(() -> new ResourceNotFoundException("Car not found with ID: " + carId));
-        return car;
+    /**
+     * @param carId
+     * @return dto of car with id = carId
+     */
+    public CarResponseDTO findCarById(Long carId) {
+        return carMapper.toDTO(carValidator.getByIdValidation(carId));
     }
 
-    public void deleteCar(Long carId) {
-        carRepository.deleteById(carId);
+    /**
+     * @param carId
+     * @return DTO of deletedCar
+     */
+    public CarResponseDTO deleteCar(Long carId) {
+        Car deletedCar = carValidator.getByIdValidation(carId);
+        carRepository.delete(carValidator.getByIdValidation(carId));
+        return carMapper.toDTO(deletedCar);
     }
-
 }
