@@ -23,7 +23,6 @@ public class InsuranceMapper {
         Insurance insurance = new Insurance();
         insurance.setPolicyNumber(insuranceRequestDTO.getPolicyNumber());
         insurance.setProvider(insuranceRequestDTO.getProvider());
-        insurance.setStartDate(insuranceRequestDTO.getStartDate());
         insurance.setEndDate(insuranceRequestDTO.getEndDate());
         return insurance;
     }

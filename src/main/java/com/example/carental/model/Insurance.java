@@ -1,5 +1,6 @@
 package com.example.carental.model;
 
+import com.example.carental.model.enums.InsuranceProvider;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -16,8 +17,9 @@ public class Insurance {
     @Column(nullable = false)
     private String policyNumber;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String provider;
+    private InsuranceProvider provider;
 
     @Column(nullable = false)
     private LocalDate startDate;
