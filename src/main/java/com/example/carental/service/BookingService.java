@@ -9,9 +9,9 @@ import com.example.carental.model.User;
 import com.example.carental.repository.BookingRepository;
 import com.example.carental.repository.CarRepository;
 import com.example.carental.repository.UserRepository;
+import com.example.carental.validation.BookingValidator;
 import com.google.api.services.calendar.Calendar;
 import org.springframework.stereotype.Service;
-import org.webjars.NotFoundException;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventDateTime;
@@ -28,25 +28,31 @@ import java.util.stream.Collectors;
 @Transactional
 public class BookingService {
     private final BookingRepository bookingRepository;
+    private final BookingMapper bookingMapper;
+    private final BookingValidator bookingValidator;
     private final CarRepository carRepository;
     private final UserRepository userRepository;
-
     private final Calendar calendarService;
 
-    public BookingService(BookingRepository bookingRepository, CarRepository carRepository, UserRepository userRepository, Calendar calendarService) {
+    public BookingService(BookingRepository bookingRepository, BookingMapper bookingMapper, BookingValidator bookingValidator, CarRepository carRepository, UserRepository userRepository, Calendar calendarService) {
         this.bookingRepository = bookingRepository;
+        this.bookingMapper = bookingMapper;
+        this.bookingValidator = bookingValidator;
         this.carRepository = carRepository;
         this.userRepository = userRepository;
         this.calendarService = calendarService;
     }
 
+    /**
+     * @param carId
+     * @param bookingRequestDTO
+     * @return DTO of new booking
+     */
     public BookingResponseDTO createBooking(Long carId, BookingRequestDTO bookingRequestDTO) {
-        User user = userRepository.findById(bookingRequestDTO.getUserId())
-                .orElseThrow(() -> new NotFoundException("User not found with id: " + bookingRequestDTO.getUserId()));
-        Car car = carRepository.findById(carId)
-                .orElseThrow(() -> new NotFoundException("Car not found with id: " + carId));
+        User user = bookingValidator.findUserToBookValidation(bookingRequestDTO.getUserId());
+        Car car = bookingValidator.findCarToRentValidation(carId);
 
-        Booking booking = BookingMapper.toEntity(bookingRequestDTO);
+        Booking booking = bookingMapper.fromDTO(bookingRequestDTO);
         booking.setUser(user);
         booking.setCar(car);
 
@@ -73,34 +79,53 @@ public class BookingService {
         booking.setCalendarEventId(event.getId());
 
         Booking savedBooking = bookingRepository.save(booking);
-        return BookingMapper.toDTO(savedBooking);
+        return bookingMapper.toDTO(savedBooking);
     }
 
-
-
-
+    /**
+     * @param userId
+     * @return List of all DTO bookings of user with id = userId
+     */
     public List<BookingResponseDTO> getUserBookings(Long userId) {
-        List<Booking> bookings = bookingRepository.findByUserId(userId);
-        return bookings.stream()
-                .map(BookingMapper::toDTO)
+        return bookingRepository.findByUserId(userId).stream()
+                .map(bookingMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
+    /**
+     * @param bookingId
+     * @return DTO of booking with id = bookingId
+     */
     public BookingResponseDTO getBookingDetails(Long bookingId) {
-        Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new NotFoundException("Booking not found with id: " + bookingId));
-        return BookingMapper.toDTO(booking);
+        Booking booking = bookingValidator.getByIdValidation(bookingId);
+
+        return bookingMapper.toDTO(booking);
     }
 
+    /**
+     * @param bookingId
+     * @param bookingRequestDTO
+     * @return DTO of updated Booking
+     */
     public BookingResponseDTO updateBooking(Long bookingId, BookingRequestDTO bookingRequestDTO) {
-        Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new NotFoundException("Booking not found with ID: " + bookingId));
-        BookingMapper.updateBookingFields(booking, bookingRequestDTO);
+        Booking booking = bookingValidator.getByIdValidation(bookingId);
+        bookingValidator.findUserToBookValidation(bookingRequestDTO.getUserId());
+        bookingValidator.findCarToRentValidation(bookingRequestDTO.getCarId());
+
+        booking = bookingMapper.fromDTO(bookingRequestDTO);
+
         Booking updatedBooking = bookingRepository.save(booking);
-        return BookingMapper.toDTO(updatedBooking);
+
+        return bookingMapper.toDTO(updatedBooking);
     }
 
-    public void cancelBooking(Long bookingId) {
+    /**
+     * @param bookingId
+     * @return DTO of deleted Booking
+     */
+    public BookingResponseDTO cancelBooking(Long bookingId) {
+        Booking booking = bookingValidator.getByIdValidation(bookingId);
         bookingRepository.deleteById(bookingId);
+        return bookingMapper.toDTO(booking);
     }
 }
