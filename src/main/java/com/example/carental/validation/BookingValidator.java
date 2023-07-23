@@ -25,16 +25,28 @@ public class BookingValidator {
         this.carRepository = carRepository;
     }
 
+    /**
+     * @param userId
+     * @return User or Exception
+     */
     public User findUserToBookValidation(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new UserForBookNotFoundException("Can not found user with id = " + userId));
     }
 
+    /**
+     * @param carId
+     * @return Car or Exception
+     */
     public Car findCarToRentValidation(Long carId) {
         return carRepository.findById(carId)
                 .orElseThrow(() -> new CarForBookNotFoundException("Can not found Car with id = " + carId));
     }
 
+    /**
+     * @param bookingId
+     * @return Booking or Exception
+     */
     public Booking getByIdValidation(Long bookingId) {
         return bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new BookingNotFoundException("Can not found booking with id = " + bookingId));
