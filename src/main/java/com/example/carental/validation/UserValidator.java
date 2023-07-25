@@ -18,15 +18,9 @@ import java.util.regex.Pattern;
 @Component
 public class UserValidator {
     private final UserRepository userRepository;
-    private final UserMapper userMapper;
-    private final CarRepository carRepository;
-    private final RoleRepository roleRepository;
 
-    public UserValidator(UserRepository userRepository, UserMapper userMapper, CarRepository carRepository, RoleRepository roleRepository) {
+    public UserValidator(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.userMapper = userMapper;
-        this.carRepository = carRepository;
-        this.roleRepository = roleRepository;
     }
 
     /**
