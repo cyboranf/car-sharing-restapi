@@ -4,6 +4,7 @@ import com.example.carental.dto.login.LoginRequest;
 import com.example.carental.dto.login.LoginResponse;
 import com.example.carental.dto.register.UserRegistrationRequest;
 import com.example.carental.dto.user.UserResponseDTO;
+import com.example.carental.mapper.UserMapper;
 import com.example.carental.model.User;
 import com.example.carental.security.JwtTokenProvider;
 import com.example.carental.service.EmailService;
@@ -27,12 +28,14 @@ import java.io.IOException;
 @RequestMapping("/api")
 public class LoginController {
     private final UserService userService;
+    private final UserMapper userMapper;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider tokenProvider;
     private final EmailService emailService;
 
-    public LoginController(UserService userService, AuthenticationManager authenticationManager, JwtTokenProvider tokenProvider, EmailService emailService) {
+    public LoginController(UserService userService, UserMapper userMapper, AuthenticationManager authenticationManager, JwtTokenProvider tokenProvider, EmailService emailService) {
         this.userService = userService;
+        this.userMapper = userMapper;
         this.authenticationManager = authenticationManager;
         this.tokenProvider = tokenProvider;
         this.emailService = emailService;
@@ -51,35 +54,24 @@ public class LoginController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody UserRegistrationRequest registrationRequest) {
         try {
-            User newUser = userService.registerUser(registrationRequest);
+            UserResponseDTO newUser = userService.registerUser(registrationRequest);
+            User user = userMapper.fromResDTO(newUser);
 
             String verificationLink = "http://localhost:8080/api/verify?token=" + newUser.getId();
 
             try {
-                emailService.sendVerificationEmail(newUser, verificationLink);
+                emailService.sendVerificationEmail(user, verificationLink);
             } catch (MessagingException | IOException e) {
                 e.printStackTrace();
                 System.err.println("Error while sending verification email: " + e.getMessage());
 
             }
 
-            UserResponseDTO userResponseDTO = convertToUserResponseDTO(newUser);
+            UserResponseDTO userResponseDTO = userMapper.toDTO(user);
             return ResponseEntity.status(HttpStatus.CREATED).body(userResponseDTO);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-    }
-
-
-
-    private UserResponseDTO convertToUserResponseDTO(User user) {
-        UserResponseDTO userResponseDTO = new UserResponseDTO();
-        userResponseDTO.setId(user.getId());
-        userResponseDTO.setFirstName(user.getFirstName());
-        userResponseDTO.setLastName(user.getLastName());
-        userResponseDTO.setEmail(user.getEmail());
-
-        return userResponseDTO;
     }
 
 }

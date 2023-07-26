@@ -33,6 +33,17 @@ public class UserMapper {
         user.setActive(userRequestDTO.isActive());
         return user;
     }
+    public User fromResDTO(UserResponseDTO userRequestDTO) {
+        User user = new User();
+        user.setEmail(userRequestDTO.getEmail());
+        user.setFirstName(userRequestDTO.getFirstName());
+        user.setLastName(userRequestDTO.getLastName());
+        user.setContactsCount(userRequestDTO.getContactsCount());
+        user.setMsgCount(userRequestDTO.getMsgCount());
+        user.setActive(userRequestDTO.isActive());
+        return user;
+    }
+
 
     public User fromRegistrationRequest(UserRegistrationRequest userRegistrationRequest) {
         User user = new User();

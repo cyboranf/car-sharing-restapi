@@ -19,7 +19,7 @@ public class RentController {
 
     @PostMapping("/bookings/{bookingId}/rents")
     public ResponseEntity<RentResponseDTO> createRent(@RequestBody RentRequestDTO rentRequestDTO) {
-        RentResponseDTO responseDTO = rentService.createRent(rentRequestDTO);
+        RentResponseDTO responseDTO = rentService.rentCar(rentRequestDTO);
         return ResponseEntity.ok(responseDTO);
     }
 

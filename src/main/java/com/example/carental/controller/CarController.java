@@ -30,7 +30,7 @@ public class CarController {
 
     @GetMapping("/{carId}")
     public ResponseEntity<CarResponseDTO> getCarById(@PathVariable Long carId) {
-        return ResponseEntity.ok(carService.getCarById(carId));
+        return ResponseEntity.ok(carService.findCarById(carId));
     }
 
     @PutMapping("/{carId}")
