@@ -1,4 +1,4 @@
-package com.example.carental.controller;
+package com.example.carental.controller.admin;
 
 import com.example.carental.dto.rent.RentRequestDTO;
 import com.example.carental.dto.rent.RentResponseDTO;
@@ -9,28 +9,38 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
-public class RentController {
+@RequestMapping("/api/admin")
+public class AdminRentController {
     private final RentService rentService;
 
-    public RentController(RentService rentService) {
+    public AdminRentController(RentService rentService) {
         this.rentService = rentService;
     }
 
     /**
-     * @param rentRequestDTO
-     * @return DTO of new rent
+     * @param userId
+     * @return DTO of all rents by user with id = @param
      */
-    @PostMapping("/bookings/rents")
-    public ResponseEntity<RentResponseDTO> createRent(@RequestBody RentRequestDTO rentRequestDTO) {
-        RentResponseDTO responseDTO = rentService.rentCar(rentRequestDTO);
+    @GetMapping("/users/{userId}/rents")
+    public ResponseEntity<List<RentResponseDTO>> getRentsByUserId(@PathVariable Long userId) {
+        List<RentResponseDTO> responseDTOs = rentService.getRentsByUserId(userId);
+        return ResponseEntity.ok(responseDTOs);
+    }
+
+    /**
+     * @param rentId
+     * @return DTO of rent
+     */
+    @GetMapping("/rents/{rentId}")
+    public ResponseEntity<RentResponseDTO> getRent(@PathVariable Long rentId) {
+        RentResponseDTO responseDTO = rentService.getRentById(rentId);
         return ResponseEntity.ok(responseDTO);
     }
 
     /**
      * @param rentId
      * @param rentRequestDTO
-     * @return update Rent with id = @param
+     * @return DTO of updated Rent
      */
     @PutMapping("/rents/{rentId}")
     public ResponseEntity<RentResponseDTO> updateRent(@PathVariable Long rentId, @RequestBody RentRequestDTO rentRequestDTO) {

@@ -6,7 +6,6 @@ import com.example.carental.service.PaymentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -17,6 +16,11 @@ public class PaymentController {
         this.paymentService = paymentService;
     }
 
+    /**
+     * @param bookingId
+     * @param paymentRequestDTO
+     * @return DTO of Payment
+     */
     @PostMapping("/bookings/{bookingId}/payments")
     public ResponseEntity<PaymentResponseDTO> makePayment(
             @PathVariable Long bookingId,
@@ -24,11 +28,10 @@ public class PaymentController {
         return ResponseEntity.ok(paymentService.makePayment(bookingId, paymentRequestDTO));
     }
 
-    @GetMapping("/users/{userId}/payments")
-    public ResponseEntity<List<PaymentResponseDTO>> getUserPayments(@PathVariable Long userId) {
-        return ResponseEntity.ok(paymentService.getUserPayments(userId));
-    }
-
+    /**
+     * @param paymentId
+     * @return DTO of payment details
+     */
     @GetMapping("/payments/{paymentId}")
     public ResponseEntity<PaymentResponseDTO> getPaymentDetails(@PathVariable Long paymentId) {
         return ResponseEntity.ok(paymentService.getPaymentDetails(paymentId));

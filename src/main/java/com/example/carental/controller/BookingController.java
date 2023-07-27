@@ -17,29 +17,41 @@ public class BookingController {
         this.bookingService = bookingService;
     }
 
+    /**
+     * @param carId
+     * @param bookingRequestDTO
+     * @return DTO of new booking
+     */
     @PostMapping("/{carId}/bookings")
     public ResponseEntity<BookingResponseDTO> createBooking(@PathVariable Long carId, @RequestBody BookingRequestDTO bookingRequestDTO) {
         return ResponseEntity.ok(bookingService.createBooking(carId, bookingRequestDTO));
     }
 
+    /**
+     * @param userId
+     * @return DTO of all Bookings of User with id = @param
+     */
     @GetMapping("/users/{userId}/bookings")
     public ResponseEntity<List<BookingResponseDTO>> getUserBookings(@PathVariable Long userId) {
         return ResponseEntity.ok(bookingService.getUserBookings(userId));
     }
 
+    /**
+     * @param bookingId
+     * @return DTO of Booking with id = @param
+     */
     @GetMapping("/bookings/{bookingId}")
     public ResponseEntity<BookingResponseDTO> getBookingDetails(@PathVariable Long bookingId) {
         return ResponseEntity.ok(bookingService.getBookingDetails(bookingId));
     }
 
+    /**
+     * @param bookingId
+     * @param bookingRequestDTO
+     * @return DTO of updated Booking with id = @param
+     */
     @PutMapping("/bookings/{bookingId}")
     public ResponseEntity<BookingResponseDTO> updateBooking(@PathVariable Long bookingId, @RequestBody BookingRequestDTO bookingRequestDTO) {
         return ResponseEntity.ok(bookingService.updateBooking(bookingId, bookingRequestDTO));
-    }
-
-    @DeleteMapping("/bookings/{bookingId}")
-    public ResponseEntity<Void> cancelBooking(@PathVariable Long bookingId) {
-        bookingService.cancelBooking(bookingId);
-        return ResponseEntity.ok().build();
     }
 }

@@ -17,6 +17,11 @@ public class RatingController {
         this.ratingService = ratingService;
     }
 
+    /**
+     * @param carId
+     * @param ratingRequestDTO
+     * @return DTO of Car Rate with id = @param
+     */
     @PostMapping("/{carId}/ratings")
     public ResponseEntity<RatingResponseDTO> addRating(
             @PathVariable Long carId,
@@ -24,6 +29,10 @@ public class RatingController {
         return ResponseEntity.ok(ratingService.addRating(carId, ratingRequestDTO));
     }
 
+    /**
+     * @param carId
+     * @return DTO of all ratings of car with id = @param
+     */
     @GetMapping("/{carId}/ratings")
     public ResponseEntity<List<RatingResponseDTO>> getCarRatings(@PathVariable Long carId) {
         return ResponseEntity.ok(ratingService.getCarRatings(carId));

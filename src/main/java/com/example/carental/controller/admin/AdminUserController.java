@@ -1,4 +1,4 @@
-package com.example.carental.controller;
+package com.example.carental.controller.admin;
 
 import com.example.carental.dto.car.CarResponseDTO;
 import com.example.carental.dto.user.UserRequestDTO;
@@ -10,12 +10,30 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/users")
-public class UserController {
+@RequestMapping("/api/admin/user")
+public class AdminUserController {
     private final UserService userService;
 
-    public UserController(UserService userService) {
+    public AdminUserController(UserService userService) {
         this.userService = userService;
+    }
+
+    /**
+     * @return DTO of all users in car-sharing system
+     */
+    @GetMapping("")
+    public ResponseEntity<List<UserResponseDTO>> getAllUser() {
+        return ResponseEntity.ok(userService.getAllUsers());
+    }
+
+    /**
+     * @param userId
+     * @return DTO of deleted User with id = @param
+     */
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<UserResponseDTO> deleteUser(@PathVariable Long userId) {
+        userService.deleteUser(userId);
+        return ResponseEntity.ok().build();
     }
 
     /**
@@ -30,7 +48,7 @@ public class UserController {
     /**
      * @param userId
      * @param userRequestDTO
-     * @return DTO of edited profile
+     * @return updated User with id = @param userId
      */
     @PutMapping("/{userId}")
     public ResponseEntity<UserResponseDTO> updateUser(@PathVariable Long userId, UserRequestDTO userRequestDTO) {
@@ -39,7 +57,7 @@ public class UserController {
 
     /**
      * @param userId
-     * @return DTO's of all user with id = @param Cars
+     * @return DTO's of cars rented by user with id = @param
      */
     @GetMapping("/{userId}/cars")
     public ResponseEntity<List<CarResponseDTO>> getUsersCars(@PathVariable Long userId) {
