@@ -1,4 +1,4 @@
-package com.example.carental.controller;
+package com.example.carental.controller.login;
 
 import com.example.carental.dto.login.LoginRequest;
 import com.example.carental.dto.login.LoginResponse;
