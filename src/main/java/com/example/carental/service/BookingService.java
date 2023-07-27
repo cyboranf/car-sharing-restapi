@@ -83,6 +83,16 @@ public class BookingService {
     }
 
     /**
+     * @return DTO of all bookings
+     * method for admin panel
+     */
+    public List<BookingResponseDTO> getAllBookings() {
+        return bookingRepository.findAll().stream()
+                .map(bookingMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    /**
      * @param userId
      * @return List of all DTO bookings of user with id = userId
      */

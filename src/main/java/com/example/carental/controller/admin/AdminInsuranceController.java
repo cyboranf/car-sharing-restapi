@@ -23,7 +23,7 @@ public class AdminInsuranceController {
      *        add new insurance by ADMIN to offer
      * @return DTO of new insurance
      */
-    @PostMapping
+    @PostMapping("/insurance")
     public ResponseEntity<InsuranceResponseDTO> createInsurance(InsuranceRequestDTO insuranceRequestDTO) {
         InsuranceResponseDTO insurance = insuranceService.getInsurance(insuranceRequestDTO);
         return new ResponseEntity<>(insurance, HttpStatus.CREATED);
@@ -32,7 +32,7 @@ public class AdminInsuranceController {
     /**
      * @return All insurance in car-sharing offer
      */
-    @GetMapping
+    @GetMapping("/insurances")
     public ResponseEntity<List<InsuranceResponseDTO>> getAllInsurance() {
         List<InsuranceResponseDTO> insurances = insuranceService.getAllInsurances();
         return new ResponseEntity<>(insurances, HttpStatus.OK);
@@ -42,7 +42,7 @@ public class AdminInsuranceController {
      * @param id
      * @return DTO of insurance with id = @param
      */
-    @GetMapping("/{id}")
+    @GetMapping("/insurance/{id}")
     public ResponseEntity<InsuranceResponseDTO> getInsuranceById(@PathVariable Long id) {
         InsuranceResponseDTO insurance = insuranceService.getInsuranceById(id);
         return new ResponseEntity<>(insurance, HttpStatus.OK);
@@ -53,7 +53,7 @@ public class AdminInsuranceController {
      * @param insuranceRequestDTO
      * @return DTO of edited Insurance with id = @param
      */
-    @PutMapping("/{id}")
+    @PutMapping("/insurance/{id}")
     public ResponseEntity<InsuranceResponseDTO> updateInsurance(@PathVariable Long id, @RequestBody InsuranceRequestDTO insuranceRequestDTO) {
         InsuranceResponseDTO insurance = insuranceService.updateInsurance(id, insuranceRequestDTO);
         return new ResponseEntity<>(insurance, HttpStatus.OK);
@@ -63,7 +63,7 @@ public class AdminInsuranceController {
      * @param id
      * @return DTO of deleted insurance from offer
      */
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/insurance/{id}")
     public ResponseEntity<InsuranceResponseDTO> deleteInsurance(@PathVariable Long id) {
         InsuranceResponseDTO insurance = insuranceService.deleteInsurance(id);
         return new ResponseEntity<>(insurance, HttpStatus.OK);

@@ -22,7 +22,7 @@ public class AdminManufacturerController {
      * @param manufacturerRequestDTO
      * @return New manufacturer created by admin
      */
-    @PostMapping
+    @PostMapping("/manufacturer")
     public ResponseEntity<ManufacturerResponseDTO> addManufacturer(@RequestBody ManufacturerRequestDTO manufacturerRequestDTO) {
         ManufacturerResponseDTO manufacturer = manufacturerService.addManufacturer(manufacturerRequestDTO);
         return new ResponseEntity<>(manufacturer, HttpStatus.CREATED);
@@ -31,7 +31,7 @@ public class AdminManufacturerController {
     /**
      * @return All manufacturers
      */
-    @GetMapping
+    @GetMapping("/manufacturers")
     public ResponseEntity<List<ManufacturerResponseDTO>> getAllManufacturers() {
         List<ManufacturerResponseDTO> allManufacturers = manufacturerService.getAllManufacturers();
         return new ResponseEntity<>(allManufacturers, HttpStatus.OK);
@@ -41,7 +41,7 @@ public class AdminManufacturerController {
      * @param id
      * @return DTO of manufacturer with id = @param
      */
-    @GetMapping("/{id}")
+    @GetMapping("/manufacturer/{id}")
     public ResponseEntity<ManufacturerResponseDTO> getManufactureById(@PathVariable Long id) {
         ManufacturerResponseDTO manufacturer = manufacturerService.getManufacturerById(id);
         return new ResponseEntity<>(manufacturer, HttpStatus.OK);
@@ -52,7 +52,7 @@ public class AdminManufacturerController {
      * @param manufacturerRequestDTO
      * @return DTO of updated Manufacturer with id = @param
      */
-    @PutMapping("/{id}")
+    @PutMapping("/manufacturer/{id}")
     public ResponseEntity<ManufacturerResponseDTO> updateManufacturer(@PathVariable Long id, ManufacturerRequestDTO manufacturerRequestDTO) {
         ManufacturerResponseDTO updatedManufacturer = manufacturerService.updateManufacturer(id, manufacturerRequestDTO);
         return new ResponseEntity<>(updatedManufacturer, HttpStatus.OK);
@@ -62,7 +62,7 @@ public class AdminManufacturerController {
      * @param id
      * @return DTO of deleted Manufacturer with id = @param
      */
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/manufacturer/{id}")
     public ResponseEntity<ManufacturerResponseDTO> deleteManufacturer(@PathVariable Long id) {
         ManufacturerResponseDTO deletedManufacturer = manufacturerService.deleteManufacturer(id);
         return new ResponseEntity<>(deletedManufacturer, HttpStatus.OK);
