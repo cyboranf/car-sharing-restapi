@@ -14,7 +14,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
@@ -42,44 +41,45 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/register", "/api/login").permitAll()
 
                 //methods GET from UserController:
-                .antMatchers(HttpMethod.GET,"/api/users").hasAnyRole("USER","SHARING_USER","ADMIN")
-                .antMatchers(HttpMethod.GET, "/api/users/{userId}").hasAnyRole("USER","SHARING_USER", "ADMIN")
-                .antMatchers(HttpMethod.GET, "/api/users/{userId}/cars").hasAnyRole("USER", "SHARING_USER", "ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/users").hasAnyRole("USER", "SHARING_USER")
+                .antMatchers(HttpMethod.GET, "/api/users/{userId}").hasAnyRole("USER", "SHARING_USER")
+                .antMatchers(HttpMethod.GET, "/api/users/{userId}/cars").hasAnyRole("USER", "SHARING_USER")
                 //methods GET from CarController:
-                .antMatchers(HttpMethod.GET, "/api/cars").hasAnyRole("USER","SHARING_USER", "ADMIN")
-                .antMatchers(HttpMethod.GET, "/api/cars/{carId}").hasAnyRole("USER","SHARING_USER", "ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/cars").hasAnyRole("USER", "SHARING_USER", "CAR_HIRE")
+                .antMatchers(HttpMethod.GET, "/api/cars/{carId}").hasAnyRole("USER", "SHARING_USER", "CAR_HIRE")
                 //methods GET from BookingController:
-                .antMatchers(HttpMethod.GET, "/api/cars/users/{userId}/booking").hasAnyRole("USER", "SHARING_USER", "ADMIN")
-                .antMatchers(HttpMethod.GET, "/api/cars/bookings/{bookingId}").hasAnyRole("USER", "SHARING_USER", "ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/cars/users/{userId}/booking").hasAnyRole("USER", "SHARING_USER", "CAR_HIRE")
+                .antMatchers(HttpMethod.GET, "/api/cars/bookings/{bookingId}").hasAnyRole("USER", "SHARING_USER", "CAR_HIRE")
                 //methods GET from RentController:
-                .antMatchers(HttpMethod.GET, "/api/users/{userId}/rents").hasAnyRole("USER", "SHARING_USER", "ADMIN")
-                .antMatchers(HttpMethod.GET, "/api/rents/{rentId}").hasAnyRole("USER", "SHARING_USER", "ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/users/{userId}/rents").hasAnyRole("USER", "SHARING_USER", "CAR_HIRE")
+                .antMatchers(HttpMethod.GET, "/api/rents/{rentId}").hasAnyRole("USER", "SHARING_USER", "CAR_HIRE")
                 //methods GET from PaymentController:
-                .antMatchers(HttpMethod.GET, "/api/{userId}/payments").hasAnyRole("USER", "SHARING_USER", "ADMIN")
-                .antMatchers(HttpMethod.GET, "/api/payments/{paymentId}").hasAnyRole("USER", "SHARING_USER", "ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/{userId}/payments").hasAnyRole("USER", "SHARING_USER", "CAR_HIRE")
+                .antMatchers(HttpMethod.GET, "/api/payments/{paymentId}").hasAnyRole("USER", "SHARING_USER", "CAR_HIRE")
                 //methods GET  from RatingController
-                .antMatchers(HttpMethod.GET, "/api/cars/{carId}/ratings").hasAnyRole("USER", "SHARING_USER", "ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/cars/{carId}/ratings").hasAnyRole("USER", "SHARING_USER", "CAR_HIRE")
 
                 //methods POST from CarController:
-                .antMatchers(HttpMethod.POST, "/api/cars").hasAnyRole("SHARING_USER", "ADMIN")
+                .antMatchers(HttpMethod.POST, "/api/cars").hasAnyRole("SHARING_USER", "CAR_HIRE")
                 //methods POST from BookingController:
-                .antMatchers(HttpMethod.POST, "/api/cars/bookings").hasAnyRole("USER","SHARING_USER", "ADMIN")
+                .antMatchers(HttpMethod.POST, "/api/cars/bookings").hasAnyRole("USER", "SHARING_USER", "CAR_HIRE")
                 //methods POST from RentController:
-                .antMatchers(HttpMethod.POST, "/api/bookings/{bookingId}/rents").hasAnyRole("USER","SHARING_USER", "ADMIN")
+                .antMatchers(HttpMethod.POST, "/api/bookings/{bookingId}/rents").hasAnyRole("USER", "SHARING_USER", "CAR_HIRE")
                 //methods POST from PaymentController:
-                .antMatchers(HttpMethod.POST, "/api/bookings/{bookingId}/payments").hasAnyRole("USER","SHARING_USER", "ADMIN")
+                .antMatchers(HttpMethod.POST, "/api/bookings/{bookingId}/payments").hasAnyRole("USER", "SHARING_USER", "CAR_HIRE")
                 //methods POST from RatingController:
-                .antMatchers(HttpMethod.POST, "/api/cars/{carId}/ratings").hasAnyRole("USER","SHARING_USER", "ADMIN")
+                .antMatchers(HttpMethod.POST, "/api/cars/{carId}/ratings").hasAnyRole("USER", "SHARING_USER", "CAR_HIRE")
 
 
                 //methods PUT from UserController:
                 .antMatchers(HttpMethod.PUT, "/api/users/{userId}").hasRole("ADMIN")
                 //methods PUT from CarController:
-                .antMatchers(HttpMethod.PUT, "/api/cars/{carId}").hasAnyRole("SHARING_USER","ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/cars/{carId}").hasAnyRole("SHARING_USER", "CAR_HIRE", "ADMIN")
                 //methods PUT from Booking Controller
-                .antMatchers(HttpMethod.PUT, "/api/cars/bookings/{bookingId}").hasAnyRole("SHARING_USER","ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/cars/bookings/{bookingId}").hasAnyRole("SHARING_USER", "CAR_HIRE", "ADMIN")
                 //method PUT from RentController:
-                .antMatchers(HttpMethod.PUT, "/api/rents/{rentId}").hasAnyRole("SHARING_USER","ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/rents/{rentId}").hasAnyRole("SHARING_USER", "CAR_HIRE", "ADMIN")
+
 
                 //methods DELETE from UserController:
                 .antMatchers(HttpMethod.DELETE, "/api/users/{userId}").hasRole("ADMIN")
@@ -89,6 +89,71 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.DELETE, "/api/cars/bookings/{bookingId}").hasRole("ADMIN")
                 //method DELETE from RentController:
                 .antMatchers(HttpMethod.DELETE, "/api/rents/{rentId}").hasRole("ADMIN")
+
+
+                // AdminUserController methods:
+                .antMatchers(HttpMethod.GET, "/api/admin/user").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/api/admin/user/{userId}").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/admin/user/{userId}").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/admin/user/{userId}").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/admin/user/{userId}/cars").hasRole("ADMIN")
+
+
+                // AdminRentController methods:
+                .antMatchers(HttpMethod.GET, "/api/admin/users/{userId}/rents").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/admin/rents/{rentId}").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/admin/rents/{rentId}").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/api/admin/rents/{rentId}").hasRole("ADMIN")
+
+
+                // AdminManufacturerController methods:
+                .antMatchers(HttpMethod.POST, "/api/admin/manufacturer").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/admin/manufacturers").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/admin/manufacturer/{id}").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/admin/manufacturer/{id}").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/api/admin/manufacturer/{id}").hasRole("ADMIN")
+
+
+                // AdminInsuranceController methods:
+                .antMatchers(HttpMethod.POST, "/api/admin/insurance").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/admin/insurances").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/admin/insurance/{id}").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/admin/insurance/{id}").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/api/admin/insurance/{id}").hasRole("ADMIN")
+
+
+                // AdminImageController methods:
+                .antMatchers(HttpMethod.GET, "/api/admin/images").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/api/admin/image/{id}").hasRole("ADMIN")
+
+
+                // AdminCarTypeController methods:
+                .antMatchers(HttpMethod.POST, "/api/admin/cartype").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/admin/cartype").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/admin/cartype/{id}").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/api/admin/cartype/{id}").hasRole("ADMIN")
+
+
+                // AdminCarStatusController methods:
+                .antMatchers(HttpMethod.POST, "/api/admin/carstatus").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/admin/carstatus").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/admin/carstatus/{id}").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/api/admin/carstatus/{id}").hasRole("ADMIN")
+
+
+                // AdminCarController methods:
+                .antMatchers(HttpMethod.GET, "/api/admin/car").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/admin/car/{id}").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/api/admin/car/{id}").hasRole("ADMIN")
+
+
+                // AdminBookingController methods:
+                .antMatchers(HttpMethod.GET, "/api/admin/booking/user/{userId}").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/admin/booking/{bookingId}").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/admin/booking/{bookingId}").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/api/admin/booking/{bookingId}").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/admin/booking").hasRole("ADMIN")
+
 
                 .anyRequest().hasRole("ADMIN")
                 .and()
