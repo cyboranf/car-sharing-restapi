@@ -82,7 +82,8 @@ public class RentService {
      */
     public RentResponseDTO deleteRentById(Long rentId) {
         Rent rent = rentValidator.getRentByIdValidation(rentId);
-
+        rentRepository.delete(rent);
         return rentMapper.toDTO(rent);
     }
+
 }

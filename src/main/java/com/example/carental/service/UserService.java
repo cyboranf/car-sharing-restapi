@@ -94,6 +94,10 @@ public class UserService {
         return userMapper.toDTO(user);
     }
 
+    /**
+     * @param userId
+     * @return List of DTO of User's Car
+     */
     public List<CarResponseDTO> getUsersCars(Long userId) {
         User user = userValidator.validateUserById(userId);
 
