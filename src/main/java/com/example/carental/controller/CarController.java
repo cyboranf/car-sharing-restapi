@@ -2,7 +2,9 @@ package com.example.carental.controller;
 
 import com.example.carental.dto.car.CarRequestDTO;
 import com.example.carental.dto.car.CarResponseDTO;
+import com.example.carental.dto.carType.CarTypeResponseDTO;
 import com.example.carental.service.CarService;
+import com.example.carental.service.CarTypeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,9 +15,11 @@ import java.util.List;
 @RequestMapping("/api/cars")
 public class CarController {
     private final CarService carService;
+    private final CarTypeService carTypeService;
 
-    public CarController(CarService carService) {
+    public CarController(CarService carService, CarTypeService carTypeService) {
         this.carService = carService;
+        this.carTypeService = carTypeService;
     }
 
     /**
@@ -31,8 +35,8 @@ public class CarController {
      * @return DTO of all cars
      */
     @GetMapping("")
-    public ResponseEntity<List<CarResponseDTO>> getAllCars() {
-        return ResponseEntity.ok(carService.getAllCars());
+    public ResponseEntity<List<CarResponseDTO>> getAllAvailableCars() {
+        return ResponseEntity.ok(carService.getAllAvailableCars());
     }
 
     /**
@@ -62,5 +66,14 @@ public class CarController {
     public ResponseEntity deleteCar(@PathVariable Long carId) {
         carService.deleteCar(carId);
         return ResponseEntity.ok().build();
+    }
+
+    /**
+     * @param carTypeId
+     * @return DTO of Car Type with id = carTypeId
+     */
+    @GetMapping("/types/{carTypeId}")
+    public ResponseEntity<CarTypeResponseDTO> getCarTypeById(@PathVariable Long carTypeId) {
+        return ResponseEntity.ok(carTypeService.getCarTypeById(carTypeId));
     }
 }

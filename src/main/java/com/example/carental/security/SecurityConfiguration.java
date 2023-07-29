@@ -47,7 +47,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 //methods GET from CarController:
                 .antMatchers(HttpMethod.GET, "/api/cars").hasAnyRole("USER", "SHARING_USER", "CAR_HIRE")
                 .antMatchers(HttpMethod.GET, "/api/cars/{carId}").hasAnyRole("USER", "SHARING_USER", "CAR_HIRE")
-                //methods GET from BookingController:
+                .antMatchers(HttpMethod.GET, "/api/cars//types/{carTypeId}").hasAnyRole("USER", "SHARING_USER", "CAR_HIRE")
+                //methods POST from MessageController:
+                .antMatchers(HttpMethod.POST, "/api/messages").hasAnyRole("USER", "SHARING_USER", "CAR_HIRE")
+                //methods GET from MessageController:
+                .antMatchers(HttpMethod.GET, "/api/messages/{senderId}/{recipientId}").hasAnyRole("USER", "SHARING_USER", "CAR_HIRE")
+                //methods DELETE from MessageController:
+                .antMatchers(HttpMethod.DELETE, "/api/messages/{messageId}").hasAnyRole("USER", "SHARING_USER", "CAR_HIRE")
                 .antMatchers(HttpMethod.GET, "/api/cars/users/{userId}/booking").hasAnyRole("USER", "SHARING_USER", "CAR_HIRE")
                 .antMatchers(HttpMethod.GET, "/api/cars/bookings/{bookingId}").hasAnyRole("USER", "SHARING_USER", "CAR_HIRE")
                 //methods GET from RentController:
@@ -56,6 +62,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 //methods GET from PaymentController:
                 .antMatchers(HttpMethod.GET, "/api/{userId}/payments").hasAnyRole("USER", "SHARING_USER", "CAR_HIRE")
                 .antMatchers(HttpMethod.GET, "/api/payments/{paymentId}").hasAnyRole("USER", "SHARING_USER", "CAR_HIRE")
+                .antMatchers(HttpMethod.GET, "/api/payments/{paymentId}/complete").hasAnyRole("USER", "SHARING_USER", "CAR_HIRE")
+                .antMatchers(HttpMethod.GET, "/api/payments/{userId}").hasAnyRole("USER", "SHARING_USER", "CAR_HIRE")
                 //methods GET  from RatingController
                 .antMatchers(HttpMethod.GET, "/api/cars/{carId}/ratings").hasAnyRole("USER", "SHARING_USER", "CAR_HIRE")
 
