@@ -40,7 +40,7 @@ public class CarFeatureSeeder implements DatabaseSeeder {
         }
     }
 
-    private CarFeature newCarFeature(String name) {
+    protected CarFeature newCarFeature(String name) {
         CarFeature carFeature = new CarFeature();
         carFeature.setName(name);
         return carFeature;

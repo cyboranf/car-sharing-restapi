@@ -40,7 +40,7 @@ public class AddressSeeder implements DatabaseSeeder {
         }
     }
 
-    private Address newAddress(String street, String city, String state, String country) {
+    protected Address newAddress(String street, String city, String state, String country) {
         Address address = new Address();
         address.setStreet(street);
         address.setCity(city);
