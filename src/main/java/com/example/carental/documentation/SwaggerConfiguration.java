@@ -20,15 +20,15 @@ public class SwaggerConfiguration {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.example.meetexApi"))
+                .apis(RequestHandlerSelectors.basePackage("com.example.carental"))
                 .paths(PathSelectors.regex("/api.*"))
                 .build();
     }
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("Meetex API")
-                .description("Meetex API Documentation")
+                .title("car-sharing API")
+                .description("car-sharing API Documentation")
                 .contact(new Contact("Filip", "www.Filip.com", "cyboranf@gmail.com"))
                 .version("1.0")
                 .build();
