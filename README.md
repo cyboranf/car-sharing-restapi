@@ -51,7 +51,7 @@ In the future i want to do a Front-end for this application, so i did an Admin p
 ## Getting Started
 
 1. Clone the repository to your local machine.
-2. Make sure you have Java 11 and Maven installed.
+2. Make sure you have Java 17 and Maven installed.
 3. Update the `application.properties` file with your database credentials.
 4. Run `mvn clean install` to build the application.
 5. Start the application with `mvn spring-boot:run`.
