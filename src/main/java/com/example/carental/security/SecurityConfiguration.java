@@ -38,7 +38,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .permitAll()
 
                 //login controller
-                .antMatchers("/api/register", "/api/login").permitAll()
+                .antMatchers("/api/register").permitAll()
+                .antMatchers("/api/login").permitAll()
 
                 //methods GET from UserController:
                 .antMatchers(HttpMethod.GET, "/api/users").hasAnyRole("USER", "SHARING_USER")
@@ -163,7 +164,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/api/admin/booking").hasRole("ADMIN")
 
 
-                .anyRequest().hasRole("ADMIN")
                 .and()
                 .apply(new JwtConfigurer(jwtTokenProvider));
     }
